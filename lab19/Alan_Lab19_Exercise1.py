@@ -2,7 +2,8 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
+from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve, confusion_matrix, precision_score, recall_score, \
+    f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
@@ -26,7 +27,22 @@ def Logistic_reg():
     print("Accuracy of the model is: ",acc)
 
     y_probabilities = model.predict_proba(X_test)
-    y_proba = y_probabilities.iloc[:1]
+    y_proba = y_probabilities[:, 1]
+    cm = confusion_matrix(y_test, y_pred)
+    tn, fp, fn, tp = cm.ravel()
+
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)  # Sensitivity
+    specificity = tn / (tn + fp)
+    f1 = f1_score(y_test, y_pred)
+
+    print(f"Confusion Matrix:\n{cm}")
+    print(f"Accuracy: {accuracy:.2f}")
+    print(f"Precision: {precision:.2f}")
+    print(f"Sensitivity (Recall): {recall:.2f}")
+    print(f"Specificity: {specificity:.2f}")
+    print(f"F1 Score: {f1:.2f}")
 
     # Compute ROC curve
     fpr, tpr, _ = roc_curve(y_test, y_proba)
@@ -72,3 +88,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
